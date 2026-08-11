@@ -26,7 +26,10 @@
     font-family:'Karla', sans-serif;
     color:var(--ink);
     -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    width:100%;
   }
+  img, svg, iframe{ max-width:100%; }
   h1,h2,h3{
     font-family:'Fraunces', serif;
     margin:0;
@@ -117,8 +120,10 @@
 
   /* ---- weather widget ---- */
   .weather-widget{
-    margin-top:20px;
-    display:inline-flex;
+    margin:20px auto 0;
+    display:flex;
+    width:fit-content;
+    max-width:100%;
     align-items:center;
     gap:12px;
     background:rgba(255,255,255,.08);
@@ -136,8 +141,10 @@
 
   /* ---- flight countdown widget ---- */
   .flight-countdown{
-    margin-top:20px;
-    display:inline-flex;
+    margin:20px auto 0;
+    display:flex;
+    width:fit-content;
+    max-width:100%;
     align-items:center;
     gap:14px;
     background:linear-gradient(135deg, rgba(225,90,45,.16), rgba(244,180,0,.14));
@@ -245,6 +252,7 @@
   /* ---- top nav ---- */
   .top-nav{
     display:flex;
+    flex-wrap:wrap;
     justify-content:center;
     gap:10px;
     margin:-24px auto 0;
@@ -395,6 +403,7 @@
   .stop-info{ flex:1; min-width:0; }
   .stop-info .stop-name{ font-family:'Fraunces',serif; font-weight:600; font-size:15.5px; }
   .stop-info .stop-note{ font-size:12.5px; color:#7a869a; margin-top:1px; }
+  .stop-info .stop-free-note{ font-size:12px; color:#0d6b4b; font-weight:700; margin-top:3px; }
   .stop-connector{
     margin-left:13px;
     padding-left:26px;
@@ -450,6 +459,7 @@
     display:flex;
     align-items:center;
     gap:10px;
+    flex-wrap:wrap;
     background:linear-gradient(135deg, rgba(225,90,45,.06), rgba(244,180,0,.08));
     border-bottom:1px solid var(--line);
   }
@@ -467,6 +477,24 @@
     border-radius:8px;
   }
   .plan-day-title:focus{ background:rgba(255,255,255,.7); }
+  .plan-day-date{
+    font-family:'Karla',sans-serif;
+    font-size:12.5px;
+    color:var(--navy);
+    border:1px solid var(--line);
+    background:#fff;
+    border-radius:10px;
+    padding:5px 8px;
+    outline:none;
+  }
+  .plan-day-dateline{
+    padding:0 20px;
+    margin-top:-6px;
+    margin-bottom:6px;
+    font-size:12.5px;
+    color:#7a869a;
+    font-weight:600;
+  }
   .plan-day-remove{
     border:none;
     background:none;
@@ -755,12 +783,14 @@
   #flight{ display:none; }
   .flight-table-wrap{
     border-radius:20px;
-    overflow:hidden;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
     border:1px solid var(--line);
     box-shadow:0 1px 2px rgba(11,21,38,.05);
   }
   .flight-table{
     width:100%;
+    min-width:420px;
     border-collapse:collapse;
     background:var(--paper);
     font-size:14.5px;
@@ -1382,6 +1412,99 @@
   @media (max-width:560px){
     .detail-body{padding:24px 20px 28px;}
   }
+
+  /* ============================================================
+     RESPONZÍVNE ÚPRAVY — mobil, tablet
+     ============================================================ */
+
+  /* --- Tablet (641px – 900px) --- */
+  @media (max-width:900px){
+    #grid{ grid-template-columns:repeat(auto-fill, minmax(210px,1fr)); gap:18px; }
+    main{ padding:24px 16px 80px; }
+  }
+
+  /* --- Mobil (≤640px) --- */
+  @media (max-width:640px){
+    header{ padding:40px 16px 32px; }
+    header h1{ font-size:clamp(26px,8vw,34px); }
+    header p{ font-size:14px; padding:0 4px; }
+    .legend{ gap:8px; }
+    .legend span{ font-size:11px; padding:5px 10px; }
+
+    .weather-widget, .flight-countdown{
+      flex-wrap:wrap;
+      justify-content:center;
+      text-align:center;
+      max-width:100%;
+      padding:10px 16px;
+    }
+    .flight-countdown .fc-text{ text-align:center; }
+
+    .top-nav{ gap:6px; margin-top:-16px; padding:0 12px; }
+    .nav-btn{
+      font-size:11.5px;
+      padding:8px 10px;
+      white-space:normal;
+      text-align:center;
+      line-height:1.25;
+      flex:0 1 auto;
+      max-width:calc(33.333% - 6px);
+      flex-direction:column;
+      gap:3px;
+    }
+    .nav-btn #navProgress, .nav-btn #navPackingProgress{
+      display:block;
+      margin:2px auto 0;
+      width:fit-content;
+    }
+
+    main{ padding:20px 12px 70px; }
+
+    #grid{ grid-template-columns:1fr; gap:16px; }
+
+    .search-wrap{ max-width:100%; }
+    .search-input{ font-size:16px; } /* 16px zabraňuje auto-zoomu na iOS pri fokuse */
+
+    .filter-bar{ gap:6px; }
+    .filter-chip{ font-size:12px; padding:7px 12px; }
+
+    .day-card-header, .plan-day-header{
+      padding:14px 16px;
+      align-items:flex-start;
+    }
+    .day-map-btn, .plan-day-map{ width:100%; justify-content:center; }
+    .plan-day-title{ width:100%; }
+    .plan-day-date{ width:100%; }
+    .plan-day-remove{ margin-left:auto; }
+
+    .day-stops, .plan-day-body{ padding-left:14px; padding-right:14px; }
+    .stop-connector{ padding-left:20px; flex-wrap:wrap; }
+
+    .flight-table{ font-size:13px; min-width:0; }
+    .flight-table th, .flight-table td{ padding:9px 10px; }
+    .flight-table td:first-child{ width:auto; min-width:90px; }
+
+    .weather-current-card{ padding:24px 18px; }
+    .weather-current-card .wc-temp{ font-size:42px; }
+    .weather-forecast-grid{ grid-template-columns:repeat(auto-fill, minmax(90px,1fr)); gap:10px; }
+
+    .flight-step, .safety-card{ padding:14px 16px; }
+    .info-subnav{ gap:6px; }
+    .info-subnav-btn{ font-size:12px; padding:8px 12px; }
+
+    .checklist-header h2{ font-size:22px; }
+
+    .reset-btn-row{ flex-direction:column; align-items:center; }
+
+    .lightbox-img, #lightboxImg{ max-height:75vh; }
+  }
+
+  /* --- Veľmi malé telefóny (≤380px) --- */
+  @media (max-width:380px){
+    header h1{ font-size:24px; }
+    .nav-btn{ font-size:11px; padding:8px 11px; }
+    .card .body{ padding:14px 16px 18px; }
+  }
 </style>
 </head>
 <body>
@@ -1432,10 +1555,7 @@
         <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
         <span id="progressLabel">0 / 8 navštívených</span>
       </div>
-      <div class="reset-btn-row">
-        <button class="reset-btn" onclick="resetVisited()">↺ Vyresetovať navštívené</button>
-        <button class="reset-btn" onclick="resetFavorites()">↺ Vyresetovať obľúbené</button>
-      </div>
+      <button class="reset-btn" onclick="resetVisited()">↺ Vyresetovať navštívené</button>
     </div>
     <div id="checklistItems"></div>
   </section>
@@ -4708,10 +4828,12 @@ function buildItinerary(){
   container.innerHTML = '';
 
   itineraryDays.forEach(day => {
+    const dateLabel = day.date ? formatItineraryDate(day.date) : '';
+
     if(day.type === 'arrival' || day.type === 'departure'){
       const card = document.createElement('div');
       card.className = day.type === 'arrival' ? 'arrival-card' : 'departure-card';
-      card.innerHTML = `<h3>${day.type === 'arrival' ? '🛬' : '🛫'} ${day.title}</h3><div style="font-size:12.5px; color:#7a869a; margin-bottom:6px;">${day.sub}</div><p style="margin:0;">${day.note}</p>`;
+      card.innerHTML = `<h3>${day.type === 'arrival' ? '🛬' : '🛫'} ${dateLabel} — ${day.title}</h3><div style="font-size:12.5px; color:#7a869a; margin-bottom:6px;">${day.sub}</div><p style="margin:0;">${day.note}</p>`;
       container.appendChild(card);
       return;
     }
@@ -4724,8 +4846,8 @@ function buildItinerary(){
     header.className = 'day-card-header';
     header.innerHTML = `
       <div>
-        <h3>${day.title}</h3>
-        <div class="day-sub">${day.sub}</div>
+        <h3>${dateLabel}</h3>
+        <div class="day-sub">${day.title} · ${day.sub}</div>
       </div>
       ${mapsUrl ? `<a class="day-map-btn" href="${mapsUrl}" target="_blank" rel="noopener">🧭 Celá trasa v Google Maps</a>` : ''}
     `;
@@ -4737,6 +4859,7 @@ function buildItinerary(){
     day.stops.forEach((stop, idx) => {
       const pi = findPlaceIndex(stop.title);
       const place = pi !== -1 ? places[pi] : null;
+      const freeReason = (place && day.date) ? getFreeReasonForDate(place, day.date) : null;
       const row = document.createElement('div');
       row.className = 'stop-row';
       const cover = place && place.gallery ? place.gallery[0] : null;
@@ -4746,6 +4869,7 @@ function buildItinerary(){
         <div class="stop-info">
           <div class="stop-name">${stop.title}</div>
           ${stop.note ? `<div class="stop-note">${stop.note}</div>` : ''}
+          ${freeReason ? `<div class="stop-free-note">🎉 Práve v tento deň: ${freeReason}</div>` : ''}
         </div>
       `;
       if(pi !== -1){
@@ -4784,7 +4908,14 @@ let plannerDayCounter = 0;
 
 function newPlannerDay(title){
   plannerDayCounter++;
-  return { id: 'd' + Date.now() + '_' + plannerDayCounter, title: title || `Deň ${plannerDays.length + 1}`, stops: [] };
+  return { id: 'd' + Date.now() + '_' + plannerDayCounter, title: title || `Deň ${plannerDays.length + 1}`, date: null, stops: [] };
+}
+
+function setPlannerDayDate(dayId, dateStr){
+  const day = plannerDays.find(d => d.id === dayId);
+  if(day) day.date = dateStr || null;
+  savePlanner();
+  renderPlanner();
 }
 
 async function savePlanner(){
@@ -4891,13 +5022,24 @@ function renderPlanner(){
     header.className = 'plan-day-header';
     header.innerHTML = `
       <input class="plan-day-title" value="${day.title.replace(/"/g,'&quot;')}" />
+      <input type="date" class="plan-day-date" value="${day.date || ''}" min="2026-08-16" max="2026-08-22" title="Priraď reálny dátum (16.–22. 8. 2026)">
       ${mapsUrl ? `<a class="plan-day-map" href="${mapsUrl}" target="_blank" rel="noopener">🧭 Trasa</a>` : ''}
       <button class="plan-day-remove" onclick="removePlannerDay('${day.id}')">Zmazať deň</button>
     `;
     header.querySelector('.plan-day-title').addEventListener('input', (e) => {
       renamePlannerDay(day.id, e.target.value);
     });
+    header.querySelector('.plan-day-date').addEventListener('change', (e) => {
+      setPlannerDayDate(day.id, e.target.value);
+    });
     card.appendChild(header);
+
+    if(day.date){
+      const dateLine = document.createElement('div');
+      dateLine.className = 'plan-day-dateline';
+      dateLine.textContent = `📅 ${formatItineraryDate(day.date)}`;
+      card.appendChild(dateLine);
+    }
 
     const body = document.createElement('div');
     body.className = 'plan-day-body';
@@ -4911,12 +5053,13 @@ function renderPlanner(){
       day.stops.forEach((placeIdx, pos) => {
         const place = places[placeIdx];
         if(!place) return;
+        const freeReason = day.date ? getFreeReasonForDate(place, day.date) : null;
         const row = document.createElement('div');
         row.className = 'plan-stop-row';
         const cover = place.gallery && place.gallery[0];
         row.innerHTML = `
           ${cover ? `<img class="plan-stop-thumb" src="${commonsUrl(cover,100)}" alt="${place.title}" loading="lazy" onerror="this.style.visibility='hidden'">` : `<div class="plan-stop-thumb"></div>`}
-          <span class="plan-stop-name">${place.title}</span>
+          <span class="plan-stop-name">${place.title}${freeReason ? `<br><span class="stop-free-note">🎉 ${freeReason}</span>` : ''}</span>
           <div class="plan-stop-btns">
             <button title="Posunúť hore" ${pos===0?'disabled style="opacity:.3;"':''}>↑</button>
             <button title="Posunúť dole" ${pos===day.stops.length-1?'disabled style="opacity:.3;"':''}>↓</button>
