@@ -785,6 +785,7 @@
   }
   .pack-item:hover{ background:#F7F9FC; }
   .pack-item .pack-box{
+    box-sizing:border-box;
     width:24px; height:24px;
     border-radius:8px;
     border:2px solid #cbd5e1;
@@ -794,8 +795,8 @@
     transition:background .15s ease, border-color .15s ease;
   }
   .pack-item.packed .pack-box{
-    background:linear-gradient(135deg, var(--teal), var(--coral));
-    border-color:transparent;
+    background:linear-gradient(135deg, var(--navy), var(--teal));
+    border:none;
   }
   .pack-item .pack-box svg{ width:14px; height:14px; opacity:0; transition:opacity .15s ease; }
   .pack-item.packed .pack-box svg{ opacity:1; }
@@ -968,7 +969,7 @@
     transition:width .35s ease;
   }
   #packingProgressFill{
-    background:linear-gradient(90deg, var(--teal), var(--gold), var(--coral));
+    background:linear-gradient(90deg, var(--navy), var(--teal));
     background-size:200% 100%;
     animation:progressOmbre 6s ease infinite;
   }
