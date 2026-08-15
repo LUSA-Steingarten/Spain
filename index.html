@@ -794,7 +794,7 @@
     transition:background .15s ease, border-color .15s ease;
   }
   .pack-item.packed .pack-box{
-    background:linear-gradient(135deg, var(--teal), var(--gold), var(--coral));
+    background:linear-gradient(135deg, var(--teal), var(--coral));
     border-color:transparent;
   }
   .pack-item .pack-box svg{ width:14px; height:14px; opacity:0; transition:opacity .15s ease; }
@@ -3952,6 +3952,19 @@ const places = [
   }
 ];
 
+/* ---- univerzálne úložisko: window.storage (v Claude appke) alebo localStorage (bežný prehliadač / WebView) ---- */
+const appStorage = (typeof window.storage !== 'undefined' && window.storage) ? window.storage : {
+  async get(key){
+    const v = localStorage.getItem(key);
+    if(v === null){ throw new Error('key not found'); }
+    return { key, value: v };
+  },
+  async set(key, value){
+    localStorage.setItem(key, value);
+    return { key, value };
+  }
+};
+
 const grid = document.getElementById('grid');
 const HOME = { lat: 41.3977305, lon: 2.2019634, label: "ubytovania" };
 
@@ -4635,7 +4648,7 @@ async function toggleVisited(i){
   visited[i] = !visited[i];
   renderVisitedState();
   try{
-    await window.storage.set('visited-places', JSON.stringify(visited), false);
+    await appStorage.set('visited-places', JSON.stringify(visited), false);
   } catch(e){
     storageAvailable = false;
   }
@@ -4645,12 +4658,12 @@ function resetVisited(){
   if(!confirm('Naozaj chceš odznačiť všetky navštívené miesta?')) return;
   visited = {};
   renderVisitedState();
-  window.storage.set('visited-places', JSON.stringify(visited), false).catch(() => { storageAvailable = false; });
+  appStorage.set('visited-places', JSON.stringify(visited), false).catch(() => { storageAvailable = false; });
 }
 
 async function loadVisited(){
   try{
-    const res = await window.storage.get('visited-places');
+    const res = await appStorage.get('visited-places');
     if(res && res.value) visited = JSON.parse(res.value);
   } catch(e){
     visited = {};
@@ -4675,13 +4688,13 @@ function renderFavoritesState(){
 
 async function saveFavorites(){
   try{
-    await window.storage.set('favorite-places', JSON.stringify(favorites), false);
+    await appStorage.set('favorite-places', JSON.stringify(favorites), false);
   } catch(e){ /* uloží sa len na čas tejto session */ }
 }
 
 async function loadFavorites(){
   try{
-    const res = await window.storage.get('favorite-places');
+    const res = await appStorage.get('favorite-places');
     if(res && res.value) favorites = JSON.parse(res.value);
   } catch(e){
     favorites = {};
@@ -4975,13 +4988,13 @@ function setPlannerDayDate(dayId, dateStr){
 
 async function savePlanner(){
   try{
-    await window.storage.set('planner-days', JSON.stringify(plannerDays), false);
+    await appStorage.set('planner-days', JSON.stringify(plannerDays), false);
   } catch(e){ /* uloží sa len na čas tejto session */ }
 }
 
 async function loadPlanner(){
   try{
-    const res = await window.storage.get('planner-days');
+    const res = await appStorage.get('planner-days');
     if(res && res.value) plannerDays = JSON.parse(res.value);
   } catch(e){
     plannerDays = [];
@@ -5200,7 +5213,6 @@ const packingCategories = [
     items: [
       "Nafukovačka",
       "Opaľovací krém",
-      "Uterák",
       "Krém po opaľovaní",
       "Vrecko na mokré plavky",
       "Okuliare do vody",
@@ -5227,6 +5239,7 @@ const packingCategories = [
       "Lekárnička (náplasť, ibalgin, čierne uhlie)",
       "Doplnky (karotén, Mg, kolagén, elektrolyty)",
       "Zubná kefka + pasta",
+      "Zubný strojček",
       "Vložky",
       "Žuvačky do lietadla",
       "Šampón",
@@ -5260,7 +5273,6 @@ const packingCategories = [
     id: "jedlo",
     title: "🍽️ Jedlo",
     items: [
-      "Voda + fľaša",
       "Polievky",
       "Pečivo",
       "Snacky",
@@ -5274,7 +5286,7 @@ let packingStorageAvailable = true;
 
 async function savePacking(){
   try{
-    await window.storage.set('packed-items', JSON.stringify(packedItems), false);
+    await appStorage.set('packed-items', JSON.stringify(packedItems), false);
   } catch(e){
     packingStorageAvailable = false;
   }
@@ -5282,7 +5294,7 @@ async function savePacking(){
 
 async function loadPacking(){
   try{
-    const res = await window.storage.get('packed-items');
+    const res = await appStorage.get('packed-items');
     if(res && res.value) packedItems = JSON.parse(res.value);
   } catch(e){
     packedItems = {};
@@ -5360,11 +5372,11 @@ const transportTodoItems = [
 let transportTodos = {};
 
 async function saveTransportTodos(){
-  try{ await window.storage.set('transport-todos', JSON.stringify(transportTodos), false); } catch(e){}
+  try{ await appStorage.set('transport-todos', JSON.stringify(transportTodos), false); } catch(e){}
 }
 async function loadTransportTodos(){
   try{
-    const res = await window.storage.get('transport-todos');
+    const res = await appStorage.get('transport-todos');
     if(res && res.value) transportTodos = JSON.parse(res.value);
   } catch(e){ transportTodos = {}; }
   if(document.getElementById('transport').style.display !== 'none'){
@@ -5408,11 +5420,11 @@ const safetyTodoItems = [
 let safetyTodos = {};
 
 async function saveSafetyTodos(){
-  try{ await window.storage.set('safety-todos', JSON.stringify(safetyTodos), false); } catch(e){}
+  try{ await appStorage.set('safety-todos', JSON.stringify(safetyTodos), false); } catch(e){}
 }
 async function loadSafetyTodos(){
   try{
-    const res = await window.storage.get('safety-todos');
+    const res = await appStorage.get('safety-todos');
     if(res && res.value) safetyTodos = JSON.parse(res.value);
   } catch(e){ safetyTodos = {}; }
   if(document.getElementById('safety').style.display !== 'none'){
@@ -5456,11 +5468,11 @@ const crisisTodoItems = [
 let crisisTodos = {};
 
 async function saveCrisisTodos(){
-  try{ await window.storage.set('crisis-todos', JSON.stringify(crisisTodos), false); } catch(e){}
+  try{ await appStorage.set('crisis-todos', JSON.stringify(crisisTodos), false); } catch(e){}
 }
 async function loadCrisisTodos(){
   try{
-    const res = await window.storage.get('crisis-todos');
+    const res = await appStorage.get('crisis-todos');
     if(res && res.value) crisisTodos = JSON.parse(res.value);
   } catch(e){ crisisTodos = {}; }
   if(document.getElementById('crisis').style.display !== 'none'){
@@ -5505,11 +5517,11 @@ const stayTodoItems = [
 let stayTodos = {};
 
 async function saveStayTodos(){
-  try{ await window.storage.set('stay-todos', JSON.stringify(stayTodos), false); } catch(e){}
+  try{ await appStorage.set('stay-todos', JSON.stringify(stayTodos), false); } catch(e){}
 }
 async function loadStayTodos(){
   try{
-    const res = await window.storage.get('stay-todos');
+    const res = await appStorage.get('stay-todos');
     if(res && res.value) stayTodos = JSON.parse(res.value);
   } catch(e){ stayTodos = {}; }
   if(document.getElementById('stay').style.display !== 'none'){
